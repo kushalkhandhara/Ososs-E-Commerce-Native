@@ -1,13 +1,24 @@
 import { View, Text, StyleSheet, FlatList, Dimensions, Image, TouchableOpacity,Modal, Pressable } from 'react-native';
 import React, { useEffect, useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Header from '../../common/Header';
 import { useNavigation } from '@react-navigation/native';
+import {useDispatch} from "react-redux";
+
+import { addProducts } from '../../redux/slices/ProductsSlice';
+import { addItemToCart } from '../../redux/slices/CartSlice';
+
+const FULL_STAR = require('../../images/star.png');
+const HALF_STAR = require('../../images/halfstar.png');
+const EMPTY_STAR = require('../../images/emptystar.png');
+
 
 const Home = () => {
   const navigation = useNavigation();
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const dispatch = useDispatch();
 
   const openModal = (product) => {
     setSelectedProduct(product);
@@ -24,16 +35,48 @@ const Home = () => {
     getProducts();
   }, []);
 
-  const getProducts = () => {
 
+  const getProducts = () => {
     fetch('https://fakestoreapi.com/products')  // Fetching all products
       .then(res => res.json())
-      .then(data => setProducts(data))  // Updating the products state
+      .then(data => {
+        setProducts(data);
+        dispatch(addProducts(data));
+      }) 
       .catch(error => console.error('Error fetching products:', error));
   };
 
+
+
+
+  // Rating
+  const getStars = (rating) => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
+
+    // Add full stars
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(FULL_STAR);
+    }
+
+    // Add half star if needed
+    if (hasHalfStar) {
+      stars.push(HALF_STAR);
+    }
+
+    // Add empty stars to make up to 5 stars
+    const emptyStars = 5 - stars.length;
+    for (let i = 0; i < emptyStars; i++) {
+      stars.push(EMPTY_STAR);
+    }
+
+    return stars;
+  };
+
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header 
         leftIcon={require('../../images/menu.png')} 
         rightIcon={require('../../images/cart.png')}
@@ -56,8 +99,17 @@ const Home = () => {
                 <Image source={{uri: item.image}} style = {styles.itemImage} />
                 <View>
                   <Text style={styles.name}>{item.title.length>20 ? 
-                  item.title.substring(0,20) + '...' : 
+                  item.title.substring(0,15) + '...' : 
                   item.title}</Text>
+
+                  <View style={styles.starContainer}>
+                  
+                    {getStars(item.rating.rate).map((star, index) => (
+                      <Image key={index} source={star} style={styles.star} />
+                    ))}
+                    <Text style={styles.countrating}>{item.rating.count}</Text>
+                  </View>
+
                   <Text style = {styles.desc}>{item.description.length>30 ? 
                   item.description.substring(0,20) + '...' : 
                   item.description}</Text>
@@ -81,20 +133,23 @@ const Home = () => {
                   <Image source={{ uri: selectedProduct.image }} style={styles.modalImage} />
                   <Text style={styles.modalTitle}>{selectedProduct.title}</Text>
                   <Text style={styles.modalPrice}>Price: ₹{selectedProduct.price}</Text>
+                  
                   <Text style={styles.modalDescription}> Description :  {selectedProduct.description}</Text>
-                  <Pressable style={styles.Buttons} onPress={closeModal}>
-
-                    <View style={styles.AddtoCart}>
+                  
+                  <View style={styles.Buttons}>
+                    <Pressable style={styles.AddtoCart} onPress={() => {dispatch(addItemToCart(selectedProduct))}}>
                       <View style={styles.AddtoCartContent}>
                         <Text style={styles.AddtoCartText}>Add to Cart</Text>
                         <Image source={require('../../images/cart.png')} style={styles.modalCartIcon} />
                       </View>
-                    </View>
-                    <View style={styles.closeButton}>
+                    </Pressable>
+                    
+                    <Pressable style={styles.closeButton} onPress={closeModal}>
                       <Text style={styles.closeButtonText}>Close</Text>
-                    </View>
-                  
-                  </Pressable>
+                    </Pressable>
+                  </View>
+
+
                 </View>
               </View>
 
@@ -103,7 +158,7 @@ const Home = () => {
 
 
 
-      </View>
+      </SafeAreaView>
   );
 };
 
@@ -117,7 +172,7 @@ const styles = StyleSheet.create({
   },
   productItem: {
     width: 340,
-    height: 130,
+    height: 140,
     backgroundColor: '#fff',
     alignItems : 'center',
     flexDirection : 'row',
@@ -224,4 +279,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  starContainer: {
+    flexDirection: 'row',
+    marginVertical : 8,
+    marginLeft : 25,
+  },
+  star: {
+    width: 14,
+    height: 14,
+    marginHorizontal: 1,
+  },
+  countrating :{
+    color : 'grey',
+    marginLeft : 5,
+  }
 });

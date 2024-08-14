@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet, Image } from 'react-native';
-import React,{useState} from 'react';
+import { View, Text, StyleSheet, Image,Keyboard } from 'react-native';
+import React,{useEffect, useState} from 'react';
 import Header from '../common/Header';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Home from './tabs/Home';
@@ -11,6 +11,26 @@ import User from './tabs/User';
 const HomeScreen = () => {
 
     const[selectedTab,setSelectedTab] = useState(0);
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+    useEffect(() => {
+      const keyboardDidShowListener = Keyboard.addListener(
+        'keyboardDidShow',
+        () => {
+          setKeyboardVisible(true); // or some other action
+        }
+      );
+      const keyboardDidHideListener = Keyboard.addListener(
+        'keyboardDidHide',
+        () => {
+          setKeyboardVisible(false); // or some other action
+        }
+      );
+  
+      return () => {
+        keyboardDidHideListener.remove();
+        keyboardDidShowListener.remove();
+      };
+    }, []);
 
   return (
     <View style={styles.container}>
@@ -22,8 +42,7 @@ const HomeScreen = () => {
 
       {selectedTab==0 ? (<Home/>) : selectedTab==1 ? (<Search/>) : selectedTab==2 ?  (<WishList/>) : selectedTab==3 ? (<Notification/>) :(<User/>)}
 
-
-      <View style={styles.bottomView}>
+        {!isKeyboardVisible && (      <View style={styles.bottomView}>
         <TouchableOpacity style={styles.bottomTab} onPress={()=>{setSelectedTab(0)}}>
           <Image source={ selectedTab==0 ? require('../images/homefill.png') : require('../images/home.png') } style={styles.bottomTabIcon} />
         </TouchableOpacity>
@@ -44,6 +63,9 @@ const HomeScreen = () => {
           <Image source={selectedTab==4? require('../images/user_fill.png') : require('../images/user.png')} style={styles.bottomTabIcon} />
         </TouchableOpacity>
       </View>
+    )}
+
+    
     </View>
   );
 }
