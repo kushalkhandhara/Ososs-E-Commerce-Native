@@ -41,6 +41,9 @@ const Home = () => {
       .then(res => res.json())
       .then(data => {
         setProducts(data);
+        data.map(item=>{
+          item.qty = 1;
+        });
         dispatch(addProducts(data));
       }) 
       .catch(error => console.error('Error fetching products:', error));
@@ -81,6 +84,7 @@ const Home = () => {
         leftIcon={require('../../images/menu.png')} 
         rightIcon={require('../../images/cart.png')}
         title={'Grocery App'}
+        isCart={true}
         onClickLeftIcon={() => {
           navigation.openDrawer();
         }}

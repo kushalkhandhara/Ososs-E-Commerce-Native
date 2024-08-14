@@ -1,11 +1,13 @@
 import { View, Text, Dimensions, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { useSelector } from 'react-redux';
+import {useNavigation} from "@react-navigation/native"
 
 const { width, height } = Dimensions.get('window');
 
-const Header = ({ title, leftIcon, rightIcon, onClickLeftIcon, onClickRightIcon }) => {
+const Header = ({ title, leftIcon, rightIcon, onClickLeftIcon, onClickRightIcon, isCart }) => {
   const cartItems = useSelector(state => state.cart);
+  const navigation = useNavigation()
 
   return (
     <View style={styles.header}>
@@ -14,15 +16,24 @@ const Header = ({ title, leftIcon, rightIcon, onClickLeftIcon, onClickRightIcon 
       </TouchableOpacity>
 
       <Text style={styles.title}>{title}</Text>
+      {!isCart && <View></View>}
 
-      <TouchableOpacity style={styles.btn} onPress={onClickRightIcon}>
-        <Image source={rightIcon} style={styles.icon} />
-        {cartItems.data.length > 0 && ( // Only show the count if there are items in the cart
-          <View style={styles.cartBadge}>
-            <Text style={styles.cartBadgeText}>{cartItems.data.length}</Text>
-          </View>
-        )}
-      </TouchableOpacity>
+      {
+        isCart && (     
+          <TouchableOpacity style={styles.btn} onPress={()=>{
+          navigation.navigate("Cart");
+        }} >
+
+          <Image source={rightIcon} style={styles.icon} />
+          {cartItems.data.length > 0 && ( // Only show the count if there are items in the cart
+            <View style={styles.cartBadge}>
+              <Text style={styles.cartBadgeText}>{cartItems.data.length}</Text>
+            </View>
+          )}
+        </TouchableOpacity>)
+      }
+
+
     </View>
   );
 };

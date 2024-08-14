@@ -3,7 +3,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState } from 'react';
 import Header from '../../common/Header';
 import { useSelector } from 'react-redux';
-
+import { useNavigation } from '@react-navigation/native';
+import {useDispatch} from "react-redux";
+import { addItemToCart } from '../../redux/slices/CartSlice';
 
 const FULL_STAR = require('../../images/star.png');
 const HALF_STAR = require('../../images/halfstar.png');
@@ -14,6 +16,10 @@ const Search = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [search, setSearch] = useState('');
   const [searchedList, setSearchedList] = useState(products);
+
+
+  const dispatch = useDispatch();
+
 
   const filterData = (txt) => {
     if (!products || products.length === 0) return; // Handle empty or undefined products
@@ -62,10 +68,18 @@ const Search = () => {
   
       return stars;
     };
+    const navigation = useNavigation();
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title={'Search Products'} />
+      <Header title={'Search Products'} 
+      isCart={true}
+        leftIcon={require('../../images/menu.png')} 
+        rightIcon={require('../../images/cart.png')}
+        onClickLeftIcon={() => {
+          navigation.openDrawer();
+        }}
+      />
 
 
       <View style={styles.searchView}>
@@ -120,31 +134,37 @@ const Search = () => {
 
       {selectedProduct && (
         <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={closeModal}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Image source={{ uri: selectedProduct.image }} style={styles.modalImage} />
-              <Text style={styles.modalTitle}>{selectedProduct.title}</Text>
-              <Text style={styles.modalPrice}>Price: ₹{selectedProduct.price}</Text>
-              <Text style={styles.modalDescription}>Description: {selectedProduct.description}</Text>
-              <Pressable style={styles.Buttons} onPress={closeModal}>
-                <View style={styles.AddtoCart}>
-                  <View style={styles.AddtoCartContent}>
-                    <Text style={styles.AddtoCartText}>Add to Cart</Text>
-                    <Image source={require('../../images/cart.png')} style={styles.modalCartIcon} />
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={closeModal}>
+
+              <View style={styles.modalContainer}>
+                <View style={styles.modalContent}>
+                  <Image source={{ uri: selectedProduct.image }} style={styles.modalImage} />
+                  <Text style={styles.modalTitle}>{selectedProduct.title}</Text>
+                  <Text style={styles.modalPrice}>Price: ₹{selectedProduct.price}</Text>
+                  
+                  <Text style={styles.modalDescription}> Description :  {selectedProduct.description}</Text>
+                  
+                  <View style={styles.Buttons}>
+                    <Pressable style={styles.AddtoCart} onPress={() => {dispatch(addItemToCart(selectedProduct))}}>
+                      <View style={styles.AddtoCartContent}>
+                        <Text style={styles.AddtoCartText}>Add to Cart</Text>
+                        <Image source={require('../../images/cart.png')} style={styles.modalCartIcon} />
+                      </View>
+                    </Pressable>
+                    
+                    <Pressable style={styles.closeButton} onPress={closeModal}>
+                      <Text style={styles.closeButtonText}>Close</Text>
+                    </Pressable>
                   </View>
+
+
                 </View>
-                <View style={styles.closeButton}>
-                  <Text style={styles.closeButtonText}>Close</Text>
-                </View>
-              </Pressable>
-            </View>
-          </View>
-        </Modal>
+              </View>
+
+            </Modal>
       )}
     </SafeAreaView>
   );
