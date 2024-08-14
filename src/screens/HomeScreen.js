@@ -4,9 +4,7 @@ import Header from '../common/Header';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Home from './tabs/Home';
 import Search from './tabs/Search';
-import WishList from './tabs/WishList';
-import Notification from './tabs/Notification';
-import User from './tabs/User';
+
 
 const HomeScreen = () => {
 
@@ -34,13 +32,8 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      {/* <Header 
-        leftIcon={require('../images/menu.png')} 
-        rightIcon={require('../images/cart.png')}
-        title={'Grocery App'}
-      /> */}
 
-      {selectedTab==0 ? (<Home/>) : selectedTab==1 ? (<Search/>) : selectedTab==2 ?  (<WishList/>) : selectedTab==3 ? (<Notification/>) :(<User/>)}
+      {selectedTab==0 ? (<Home/>) : (<Search/>) }
 
         {!isKeyboardVisible && (      <View style={styles.bottomView}>
         <TouchableOpacity style={styles.bottomTab} onPress={()=>{setSelectedTab(0)}}>
@@ -49,18 +42,6 @@ const HomeScreen = () => {
 
         <TouchableOpacity style={styles.bottomTab}  onPress={()=>{setSelectedTab(1)}}>
           <Image source={require('../images/search.png')} style={styles.bottomTabIcon} />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.bottomTab}  onPress={()=>{setSelectedTab(2)}}>
-          <Image source={selectedTab==2 ? require('../images/heartfill.png') : require('../images/heart.png')} style={styles.bottomTabIcon} />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.bottomTab}  onPress={()=>{setSelectedTab(3)}}>
-          <Image source={selectedTab==3? require('../images/bell_fill.png') : require('../images/bell.png')} style={styles.bottomTabIcon} />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.bottomTab}  onPress={()=>{setSelectedTab(4)}}>
-          <Image source={selectedTab==4? require('../images/user_fill.png') : require('../images/user.png')} style={styles.bottomTabIcon} />
         </TouchableOpacity>
       </View>
     )}
@@ -84,7 +65,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
   },
   bottomTab: {
     justifyContent: 'center',

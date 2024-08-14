@@ -72,13 +72,11 @@ const Search = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title={'Search Products'} 
+      <Header title={'Find Products'} 
       isCart={true}
-        leftIcon={require('../../images/menu.png')} 
+        leftIcon={require('../../images/osos-logo.png')} 
         rightIcon={require('../../images/cart.png')}
-        onClickLeftIcon={() => {
-          navigation.openDrawer();
-        }}
+
       />
 
 
@@ -130,6 +128,7 @@ const Search = () => {
             </View>
           </TouchableOpacity>
         )}
+        contentContainerStyle={{ paddingBottom: 100 }}
       />
 
       {selectedProduct && (

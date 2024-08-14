@@ -11,9 +11,9 @@ const Header = ({ title, leftIcon, rightIcon, onClickLeftIcon, onClickRightIcon,
 
   return (
     <View style={styles.header}>
-      <TouchableOpacity style={styles.btn} onPress={onClickLeftIcon}>
-        <Image source={leftIcon} style={styles.icon} />
-      </TouchableOpacity>
+      <View style={styles.btn} onPress={onClickLeftIcon}>
+        <Image source={leftIcon} style={styles.Lefticon} />
+      </View>
 
       <Text style={styles.title}>{title}</Text>
       {!isCart && <View></View>}
@@ -61,6 +61,12 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     tintColor: 'white',
+  },
+  Lefticon: {
+    width: 54,
+    height: 54,
+    resizeMode:'contain',
+    // tintColor: 'white',
   },
   title: {
     color: '#fff',

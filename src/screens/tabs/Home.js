@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList, Dimensions, Image, TouchableOpacity,Modal, Pressable } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Dimensions, Image, TouchableOpacity,Modal, Pressable, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Header from '../../common/Header';
@@ -81,19 +81,17 @@ const Home = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Header 
-        leftIcon={require('../../images/menu.png')} 
+        leftIcon={require('../../images/osos-logo.png')} 
         rightIcon={require('../../images/cart.png')}
-        title={'Grocery App'}
+        title={'Shopping'}
         isCart={true}
-        onClickLeftIcon={() => {
-          navigation.openDrawer();
-        }}
       />
+      
       <FlatList 
-        data={products} 
-        keyExtractor={(item) => item.id.toString()}  
-        renderItem={({ item }) => {
-          return (
+          data={products} 
+          keyExtractor={(item) => item.id.toString()}  
+          renderItem={({ item }) => {
+            return (
               <TouchableOpacity 
                 activeOpacity={1}
                 isVisble = {true}
@@ -122,7 +120,11 @@ const Home = () => {
               
               </TouchableOpacity>
             );
-          }}/>
+          }}
+
+          contentContainerStyle={{ paddingBottom: 100 }}
+        />
+          
 
           {selectedProduct && (
 

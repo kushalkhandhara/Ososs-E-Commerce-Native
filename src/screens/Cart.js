@@ -69,6 +69,7 @@ const Cart = () => {
             </View>
           </TouchableOpacity>
         )}
+        contentContainerStyle={{ paddingBottom: 100 }}
       />
     </SafeAreaView>
   );
